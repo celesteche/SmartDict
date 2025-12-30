@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QStringListModel>
 #include <QFutureWatcher>
-#include <QMenu> // 新增
+#include <QMenu>
 #include "networkmanager.h"
 
 QT_BEGIN_NAMESPACE
@@ -25,19 +25,24 @@ private slots:
     void on_exportButton_clicked();
     void on_clearButton_clicked();
     void on_copyButton_clicked();
-
-    // 新增：处理右键菜单请求
     void on_historyContextMenu(const QPoint &pos);
+
+    // 新增：导入按钮槽函数
+    void on_importButton_clicked();
 
     void handleTranslation(const QString &word, const QString &result);
     void handleError(const QString &errorMsg);
     void onExportFinished();
+    // 新增：导入完成回调
+    void onImportFinished();
 
 private:
     Ui::MainWindow *ui;
     QStringListModel *m_historyModel;
     NetworkManager *m_netManager;
     QFutureWatcher<bool> m_exportWatcher;
+    // 新增：导入监视器
+    QFutureWatcher<QStringList> m_importWatcher;
 
     void updateHistoryView();
 };

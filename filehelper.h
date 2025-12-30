@@ -13,9 +13,12 @@ class FileHelper : public QObject
 public:
     explicit FileHelper(QObject *parent = nullptr);
 
-    // 将历史记录列表保存到指定路径的文件中
-    // 返回值：是否保存成功
+    // 导出功能（已存在）
     static bool exportHistoryToFile(const QString &filePath, const QStringList &history);
+
+    // 新增：从文件导入历史记录
+    // 返回读取到的单词列表
+    static QStringList importHistoryFromFile(const QString &filePath);
 };
 
 #endif // FILEHELPER_H

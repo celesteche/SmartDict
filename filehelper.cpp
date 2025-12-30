@@ -7,13 +7,11 @@ bool FileHelper::exportHistoryToFile(const QString &filePath, const QStringList 
     if (filePath.isEmpty()) return false;
 
     QFile file(filePath);
-    // 以只写和文本模式打开文件
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         return false;
     }
 
     QTextStream out(&file);
-    // 设置编码（Qt6 默认 UTF-8）
     out << "--- SmartDict Search History ---" << "\n";
     out << "Export Date: " << QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss") << "\n";
     out << "--------------------------------" << "\n\n";
@@ -24,4 +22,29 @@ bool FileHelper::exportHistoryToFile(const QString &filePath, const QStringList 
 
     file.close();
     return true;
+}
+
+// --- 新增：导入逻辑实现 ---
+QStringList FileHelper::importHistoryFromFile(const QString &filePath)
+{
+    QStringList result;
+    if (filePath.isEmpty()) return result;
+
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        return result;
+    }
+
+    QTextStream in(&file);
+    while (!in.atEnd()) {
+        QString line = in.readLine().trimmed();
+        // 过滤掉空行和我们导出时生成的装饰行
+        if (line.isEmpty() || line.startsWith("-") || line.startsWith("Export Date:")) {
+            continue;
+        }
+        result << line;
+    }
+
+    file.close();
+    return result;
 }

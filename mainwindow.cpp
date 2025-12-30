@@ -16,7 +16,6 @@ MainWindow::MainWindow(QWidget *parent)
     m_historyModel = new QStringListModel(this);
     ui->historyListView->setModel(m_historyModel);
 
-    // --- 新增：设置右键菜单策略 ---
     ui->historyListView->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->historyListView, &QListView::customContextMenuRequested, this, &MainWindow::on_historyContextMenu);
 
@@ -25,6 +24,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_netManager, &NetworkManager::translationFinished, this, &MainWindow::handleTranslation);
     connect(m_netManager, &NetworkManager::errorOccurred, this, &MainWindow::handleError);
     connect(&m_exportWatcher, &QFutureWatcher<bool>::finished, this, &MainWindow::onExportFinished);
+
+    // --- 新增：连接导入监视器 ---
+    connect(&m_importWatcher, &QFutureWatcher<QStringList>::finished, this, &MainWindow::onImportFinished);
 
     connect(ui->searchLineEdit, &QLineEdit::returnPressed, this, &MainWindow::on_searchButton_clicked);
 
@@ -82,7 +84,6 @@ void MainWindow::on_historyListView_clicked(const QModelIndex &index)
     on_searchButton_clicked();
 }
 
-// --- 新增：右键菜单实现 ---
 void MainWindow::on_historyContextMenu(const QPoint &pos)
 {
     QModelIndex index = ui->historyListView->indexAt(pos);
@@ -94,7 +95,6 @@ void MainWindow::on_historyContextMenu(const QPoint &pos)
     QAction *deleteAction = menu.addAction("删除此条记录");
     QAction *searchAction = menu.addAction("查询此单词");
 
-    // 执行菜单并获取点击的动作
     QAction *selectedAction = menu.exec(ui->historyListView->mapToGlobal(pos));
 
     if (selectedAction == deleteAction) {
@@ -136,6 +136,42 @@ void MainWindow::onExportFinished()
     } else {
         QMessageBox::critical(this, "错误", "后台导出失败。");
     }
+}
+
+// --- 新增：导入按钮点击处理 ---
+void MainWindow::on_importButton_clicked()
+{
+    QString filePath = QFileDialog::getOpenFileName(this, "选择导入文件", "", "文本文件 (*.txt)");
+    if (filePath.isEmpty()) return;
+
+    ui->importButton->setEnabled(false);
+    ui->statusbar->showMessage("后台导入中，请稍候...");
+
+    // 使用异步线程读取文件
+    QFuture<QStringList> future = QtConcurrent::run(&FileHelper::importHistoryFromFile, filePath);
+    m_importWatcher.setFuture(future);
+}
+
+// --- 新增：导入完成后的处理 ---
+void MainWindow::onImportFinished()
+{
+    QStringList words = m_importWatcher.result();
+    ui->importButton->setEnabled(true);
+
+    if (words.isEmpty()) {
+        QMessageBox::warning(this, "提示", "未从文件中读取到有效单词。");
+        ui->statusbar->showMessage("导入失败或文件为空", 3000);
+        return;
+    }
+
+    // 将读取到的单词存入数据库
+    for (const QString &word : words) {
+        DatabaseHelper::instance().addHistory(word);
+    }
+
+    updateHistoryView();
+    ui->statusbar->showMessage(QString("成功导入 %1 条记录").arg(words.size()), 3000);
+    QMessageBox::information(this, "成功", QString("已成功导入 %1 条历史记录！").arg(words.size()));
 }
 
 void MainWindow::on_clearButton_clicked()
