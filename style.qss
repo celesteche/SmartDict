@@ -1,0 +1,89 @@
+/* 全局背景颜色 */
+QMainWindow {
+    background-color: #f5f7fa;
+}
+
+/* 搜索框美化 */
+QLineEdit {
+    border: 2px solid #dcdfe6;
+    border-radius: 8px;
+    padding: 8px 12px;
+    background: white;
+    selection-background-color: #409eff;
+    font-size: 14px;
+}
+
+QLineEdit:focus {
+    border: 2px solid #409eff;
+}
+
+/* 按钮美化 */
+QPushButton {
+    background-color: #409eff;
+    color: white;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+QPushButton:hover {
+    background-color: #66b1ff;
+}
+
+QPushButton:pressed {
+    background-color: #3a8ee6;
+}
+
+/* 导出按钮特殊样式 */
+QPushButton#exportButton {
+    background-color: #67c23a;
+}
+
+QPushButton#exportButton:hover {
+    background-color: #85ce61;
+}
+
+/* 历史列表美化 */
+QListView {
+    border: 1px solid #dcdfe6;
+    border-radius: 8px;
+    background-color: white;
+    show-decoration-selected: 1;
+    outline: 0;
+}
+
+QListView::item {
+    padding: 10px;
+    border-bottom: 1px solid #f0f2f5;
+}
+
+QListView::item:selected {
+    background-color: #ecf5ff;
+    color: #409eff;
+}
+
+/* 结果显示区美化 */
+QTextBrowser {
+    border: 1px solid #dcdfe6;
+    border-radius: 8px;
+    background-color: white;
+    padding: 15px;
+    font-family: "Microsoft YaHei";
+    line-height: 1.5;
+}
+
+/* 分组框美化 */
+QGroupBox {
+    font-weight: bold;
+    border: 1px solid #dcdfe6;
+    border-radius: 8px;
+    margin-top: 10px;
+    padding-top: 10px;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 10px;
+    padding: 0 3px;
+}

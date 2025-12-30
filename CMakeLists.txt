@@ -27,6 +27,7 @@ set(PROJECT_SOURCES
     filehelper.h
     logger.cpp
     logger.h
+    resources.qrc
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
