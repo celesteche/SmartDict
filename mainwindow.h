@@ -2,7 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QStringListModel> // 引入 Model 模块
+#include <QStringListModel>
+#include "networkmanager.h" // 引入网络管理类
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -17,19 +18,21 @@ public:
     ~MainWindow();
 
 private slots:
-    // 当点击查询按钮时触发
+    // UI 交互槽函数
     void on_searchButton_clicked();
-
-    // 当点击搜索历史列表中的某一项时触发（预留）
     void on_historyListView_clicked(const QModelIndex &index);
+
+    // 处理网络返回结果的槽函数
+    void handleTranslation(const QString &word, const QString &result);
+    void handleError(const QString &errorMsg);
 
 private:
     Ui::MainWindow *ui;
-
-    // Model/View 框架的核心：模型
     QStringListModel *m_historyModel;
 
-    // 私有辅助函数：刷新历史记录显示
+    // 网络管理类实例
+    NetworkManager *m_netManager;
+
     void updateHistoryView();
 };
 #endif // MAINWINDOW_H
