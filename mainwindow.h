@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include <QStringListModel>
-#include "networkmanager.h" // 引入网络管理类
+#include "networkmanager.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -18,19 +18,18 @@ public:
     ~MainWindow();
 
 private slots:
-    // UI 交互槽函数
     void on_searchButton_clicked();
     void on_historyListView_clicked(const QModelIndex &index);
 
-    // 处理网络返回结果的槽函数
+    // 新增：导出按钮槽函数
+    void on_exportButton_clicked();
+
     void handleTranslation(const QString &word, const QString &result);
     void handleError(const QString &errorMsg);
 
 private:
     Ui::MainWindow *ui;
     QStringListModel *m_historyModel;
-
-    // 网络管理类实例
     NetworkManager *m_netManager;
 
     void updateHistoryView();
