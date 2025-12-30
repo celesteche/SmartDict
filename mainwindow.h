@@ -22,9 +22,10 @@ private slots:
     void on_searchButton_clicked();
     void on_historyListView_clicked(const QModelIndex &index);
     void on_exportButton_clicked();
-
-    // 新增：清空历史槽函数
     void on_clearButton_clicked();
+
+    // 新增：复制结果槽函数
+    void on_copyButton_clicked();
 
     void handleTranslation(const QString &word, const QString &result);
     void handleError(const QString &errorMsg);

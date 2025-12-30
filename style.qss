@@ -100,3 +100,16 @@ QPushButton#clearButton:hover {
 QPushButton#clearButton:pressed {
     background-color: #dd6161;
 }
+
+/* 复制按钮特殊样式（橙色） */
+QPushButton#copyButton {
+    background-color: #e6a23c;
+}
+
+QPushButton#copyButton:hover {
+    background-color: #ebb563;
+}
+
+QPushButton#copyButton:pressed {
+    background-color: #cf9236;
+}

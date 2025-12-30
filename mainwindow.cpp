@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QtConcurrent>
+#include <QClipboard> // 引入剪贴板类
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -106,21 +107,33 @@ void MainWindow::onExportFinished()
     }
 }
 
-// 实现清空历史功能
 void MainWindow::on_clearButton_clicked()
 {
     if (m_historyModel->stringList().isEmpty()) return;
 
-    // 弹出二次确认对话框
     QMessageBox::StandardButton reply;
     reply = QMessageBox::question(this, "确认", "确定要清空所有搜索历史吗？\n(此操作不可撤销)",
                                   QMessageBox::Yes | QMessageBox::No);
 
     if (reply == QMessageBox::Yes) {
-        // 1. 调用数据库删除逻辑
         DatabaseHelper::instance().clearHistory();
-        // 2. 刷新界面
         updateHistoryView();
         ui->statusbar->showMessage("搜索历史已清空", 3000);
     }
+}
+
+// 实现复制功能
+void MainWindow::on_copyButton_clicked()
+{
+    QString text = ui->resultBrowser->toPlainText();
+    if (text.isEmpty()) {
+        ui->statusbar->showMessage("没有内容可以复制", 2000);
+        return;
+    }
+
+    // 获取系统剪贴板
+    QClipboard *clipboard = QGuiApplication::clipboard();
+    clipboard->setText(text);
+
+    ui->statusbar->showMessage("已复制到剪贴板", 2000);
 }
