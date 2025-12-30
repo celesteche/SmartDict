@@ -1,0 +1,9 @@
+D:/QtCode/SmartDict/build/Desktop_Qt_6_9_2_MinGW_64_bit-Debug/CMakeFiles/SmartDict.dir
+D:/QtCode/SmartDict/build/Desktop_Qt_6_9_2_MinGW_64_bit-Debug/CMakeFiles/edit_cache.dir
+D:/QtCode/SmartDict/build/Desktop_Qt_6_9_2_MinGW_64_bit-Debug/CMakeFiles/rebuild_cache.dir
+D:/QtCode/SmartDict/build/Desktop_Qt_6_9_2_MinGW_64_bit-Debug/CMakeFiles/list_install_components.dir
+D:/QtCode/SmartDict/build/Desktop_Qt_6_9_2_MinGW_64_bit-Debug/CMakeFiles/install.dir
+D:/QtCode/SmartDict/build/Desktop_Qt_6_9_2_MinGW_64_bit-Debug/CMakeFiles/install/local.dir
+D:/QtCode/SmartDict/build/Desktop_Qt_6_9_2_MinGW_64_bit-Debug/CMakeFiles/install/strip.dir
+D:/QtCode/SmartDict/build/Desktop_Qt_6_9_2_MinGW_64_bit-Debug/CMakeFiles/SmartDict_autogen_timestamp_deps.dir
+D:/QtCode/SmartDict/build/Desktop_Qt_6_9_2_MinGW_64_bit-Debug/CMakeFiles/SmartDict_autogen.dir

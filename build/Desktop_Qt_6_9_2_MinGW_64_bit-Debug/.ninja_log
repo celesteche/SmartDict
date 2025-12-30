@@ -1,0 +1,10 @@
+# ninja log v6
+4	3170	7887671536745319	build.ninja	56d41d1ee0d6a493
+30	624	7887671544613862	SmartDict_autogen/timestamp	2921da32ae6594fc
+30	624	7887671544613862	SmartDict_autogen/mocs_compilation.cpp	2921da32ae6594fc
+30	624	7887671544613862	D:/QtCode/SmartDict/build/Desktop_Qt_6_9_2_MinGW_64_bit-Debug/SmartDict_autogen/timestamp	2921da32ae6594fc
+30	624	7887671544613862	D:/QtCode/SmartDict/build/Desktop_Qt_6_9_2_MinGW_64_bit-Debug/SmartDict_autogen/mocs_compilation.cpp	2921da32ae6594fc
+632	2552	7887671545634637	CMakeFiles/SmartDict.dir/main.cpp.obj	1594cd45f5768e87
+635	2584	7887671545654955	CMakeFiles/SmartDict.dir/mainwindow.cpp.obj	acbc6a2ec03f51f8
+630	2589	7887671545600329	CMakeFiles/SmartDict.dir/SmartDict_autogen/mocs_compilation.cpp.obj	f706de2df8d723c6
+2589	2862	7887671565191983	SmartDict.exe	7097105dd934406d
