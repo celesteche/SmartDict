@@ -6,9 +6,8 @@ DatabaseHelper& DatabaseHelper::instance() {
 }
 
 DatabaseHelper::DatabaseHelper(QObject *parent) : QObject(parent) {
-    // 使用 SQLite 数据库
     m_db = QSqlDatabase::addDatabase("QSQLITE");
-    m_db.setDatabaseName("history.db"); // 数据库文件名
+    m_db.setDatabaseName("history.db");
 }
 
 DatabaseHelper::~DatabaseHelper() {
@@ -24,37 +23,41 @@ bool DatabaseHelper::initDatabase() {
     }
 
     QSqlQuery query;
-    // 创建历史记录表：id, 单词, 时间戳
-    QString sql = "CREATE TABLE IF NOT EXISTS history ("
-                  "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                  "word TEXT UNIQUE, "
-                  "timestamp DATETIME)";
 
-    if (!query.exec(sql)) {
-        qDebug() << "Error: Fail to create table." << query.lastError();
+    // 表1：搜索历史
+    QString sqlHistory = "CREATE TABLE IF NOT EXISTS history ("
+                         "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                         "word TEXT UNIQUE, "
+                         "timestamp DATETIME)";
+    if (!query.exec(sqlHistory)) {
+        qDebug() << "Error: Fail to create history table." << query.lastError();
+    }
+
+    // 表2：翻译缓存 (存储单词及其对应的翻译结果)
+    QString sqlCache = "CREATE TABLE IF NOT EXISTS dict_cache ("
+                       "word TEXT PRIMARY KEY, "
+                       "result TEXT, "
+                       "timestamp DATETIME)";
+    if (!query.exec(sqlCache)) {
+        qDebug() << "Error: Fail to create cache table." << query.lastError();
         return false;
     }
+
     return true;
 }
 
 void DatabaseHelper::addHistory(const QString &word) {
     if (word.isEmpty()) return;
-
     QSqlQuery query;
-    // 使用 REPLACE INTO 确保单词重复时更新时间戳
     query.prepare("INSERT OR REPLACE INTO history (word, timestamp) VALUES (:word, :time)");
     query.bindValue(":word", word);
     query.bindValue(":time", QDateTime::currentDateTime());
-
-    if (!query.exec()) {
-        qDebug() << "Add History Error:" << query.lastError();
-    }
+    query.exec();
 }
 
 QStringList DatabaseHelper::getHistory() {
     QStringList history;
     QSqlQuery query("SELECT word FROM history ORDER BY timestamp DESC LIMIT 50");
-
     while (query.next()) {
         history << query.value(0).toString();
     }
@@ -64,4 +67,28 @@ QStringList DatabaseHelper::getHistory() {
 void DatabaseHelper::clearHistory() {
     QSqlQuery query;
     query.exec("DELETE FROM history");
+}
+
+// --- 缓存表操作 ---
+
+void DatabaseHelper::saveCache(const QString &word, const QString &result) {
+    if (word.isEmpty() || result.isEmpty()) return;
+    QSqlQuery query;
+    query.prepare("INSERT OR REPLACE INTO dict_cache (word, result, timestamp) VALUES (:word, :result, :time)");
+    query.bindValue(":word", word);
+    query.bindValue(":result", result);
+    query.bindValue(":time", QDateTime::currentDateTime());
+    if (!query.exec()) {
+        qDebug() << "Save Cache Error:" << query.lastError();
+    }
+}
+
+QString DatabaseHelper::getCache(const QString &word) {
+    QSqlQuery query;
+    query.prepare("SELECT result FROM dict_cache WHERE word = :word");
+    query.bindValue(":word", word);
+    if (query.exec() && query.next()) {
+        return query.value(0).toString();
+    }
+    return QString(); // 返回空字符串表示没找到
 }
