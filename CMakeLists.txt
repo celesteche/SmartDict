@@ -23,6 +23,8 @@ set(PROJECT_SOURCES
     databasehelper.h
     networkmanager.cpp
     networkmanager.h
+    filehelper.cpp
+    filehelper.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

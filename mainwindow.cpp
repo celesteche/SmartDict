@@ -2,6 +2,8 @@
 #include "./ui_mainwindow.h"
 #include "databasehelper.h"
 #include <QMessageBox> // 引入弹窗提示
+#include "filehelper.h"
+#include <QFileDialog> // 引入文件对话框
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -74,6 +76,25 @@ void MainWindow::on_historyListView_clicked(const QModelIndex &index)
 // 导出按钮的实现
 void MainWindow::on_exportButton_clicked()
 {
-    // 暂时先弹个窗，下一阶段我们实现真正的多线程文件写入
-    QMessageBox::information(this, "提示", "导出功能即将实现！");
+    // 1. 获取当前所有的历史记录
+    QStringList history = DatabaseHelper::instance().getHistory();
+    if (history.isEmpty()) {
+        QMessageBox::warning(this, "提示", "当前没有历史记录可以导出。");
+        return;
+    }
+
+    // 2. 弹出文件保存对话框
+    QString filePath = QFileDialog::getSaveFileName(this,
+                                                    "导出历史记录",
+                                                    "history_export.txt",
+                                                    "文本文件 (*.txt)");
+
+    if (filePath.isEmpty()) return;
+
+    // 3. 执行导出
+    if (FileHelper::exportHistoryToFile(filePath, history)) {
+        QMessageBox::information(this, "成功", "历史记录已成功导出到：\n" + filePath);
+    } else {
+        QMessageBox::critical(this, "错误", "文件导出失败，请检查权限。");
+    }
 }
