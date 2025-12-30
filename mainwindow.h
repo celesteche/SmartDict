@@ -36,6 +36,8 @@ private slots:
     // 新增：导入完成回调
     void onImportFinished();
 
+    void on_actionAbout_triggered();
+
 private:
     Ui::MainWindow *ui;
     QStringListModel *m_historyModel;

@@ -202,3 +202,20 @@ void MainWindow::on_copyButton_clicked()
 
     ui->statusbar->showMessage("已复制到剪贴板", 2000);
 }
+
+
+void MainWindow::on_actionAbout_triggered()
+{
+    QMessageBox::about(this, "关于 SmartDict",
+                       "<h3>SmartDict - 智能词典 v1.0</h3>"
+                       "<p>本软件由计算机科学与技术学院学生开发。</p>"
+                       "<p><b>功能特性：</b></p>"
+                       "<ul>"
+                       "<li>基于 MyMemory API 的实时网络翻译</li>"
+                       "<li>SQLite 本地缓存，提升二次查询速度</li>"
+                       "<li>Model/View 架构管理搜索历史</li>"
+                       "<li>支持历史记录的导入与导出 (TXT)</li>"
+                       "<li>多线程异步操作，界面永不卡顿</li>"
+                       "</ul>"
+                       "<p>学号：2023414300104<br>姓名：陈熳墁</p>");
+}
