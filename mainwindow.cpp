@@ -4,7 +4,7 @@
 #include "filehelper.h"
 #include <QMessageBox>
 #include <QFileDialog>
-#include <QtConcurrent> // 引入并发模块
+#include <QtConcurrent>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -19,8 +19,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(m_netManager, &NetworkManager::translationFinished, this, &MainWindow::handleTranslation);
     connect(m_netManager, &NetworkManager::errorOccurred, this, &MainWindow::handleError);
-
-    // 连接多线程观察者的信号：当后台任务结束时，通知主线程
     connect(&m_exportWatcher, &QFutureWatcher<bool>::finished, this, &MainWindow::onExportFinished);
 
     updateHistoryView();
@@ -77,7 +75,6 @@ void MainWindow::on_historyListView_clicked(const QModelIndex &index)
     on_searchButton_clicked();
 }
 
-// 修改后的导出函数：使用多线程
 void MainWindow::on_exportButton_clicked()
 {
     QStringList history = DatabaseHelper::instance().getHistory();
@@ -89,24 +86,16 @@ void MainWindow::on_exportButton_clicked()
     QString filePath = QFileDialog::getSaveFileName(this, "导出历史记录", "history_export.txt", "文本文件 (*.txt)");
     if (filePath.isEmpty()) return;
 
-    // 禁用按钮，防止重复点击
     ui->exportButton->setEnabled(false);
     ui->statusbar->showMessage("后台导出中，请稍候...");
 
-    // 使用 QtConcurrent::run 在后台线程执行耗时的文件写入操作
-    // QFuture<bool> future = QtConcurrent::run(函数名, 参数1, 参数2...);
     QFuture<bool> future = QtConcurrent::run(&FileHelper::exportHistoryToFile, filePath, history);
-
-    // 让观察者开始监视这个 future
     m_exportWatcher.setFuture(future);
 }
 
-// 后台线程完成后的回调函数（在主线程执行）
 void MainWindow::onExportFinished()
 {
-    // 获取后台函数的返回值
     bool success = m_exportWatcher.result();
-
     ui->exportButton->setEnabled(true);
     ui->statusbar->showMessage("导出操作已完成", 3000);
 
@@ -114,5 +103,24 @@ void MainWindow::onExportFinished()
         QMessageBox::information(this, "成功", "历史记录已通过后台线程成功导出！");
     } else {
         QMessageBox::critical(this, "错误", "后台导出失败。");
+    }
+}
+
+// 实现清空历史功能
+void MainWindow::on_clearButton_clicked()
+{
+    if (m_historyModel->stringList().isEmpty()) return;
+
+    // 弹出二次确认对话框
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "确认", "确定要清空所有搜索历史吗？\n(此操作不可撤销)",
+                                  QMessageBox::Yes | QMessageBox::No);
+
+    if (reply == QMessageBox::Yes) {
+        // 1. 调用数据库删除逻辑
+        DatabaseHelper::instance().clearHistory();
+        // 2. 刷新界面
+        updateHistoryView();
+        ui->statusbar->showMessage("搜索历史已清空", 3000);
     }
 }

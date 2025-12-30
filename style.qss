@@ -87,3 +87,16 @@ QGroupBox::title {
     left: 10px;
     padding: 0 3px;
 }
+
+/* 清空按钮特殊样式（红色） */
+QPushButton#clearButton {
+    background-color: #f56c6c;
+}
+
+QPushButton#clearButton:hover {
+    background-color: #f78989;
+}
+
+QPushButton#clearButton:pressed {
+    background-color: #dd6161;
+}
