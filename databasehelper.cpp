@@ -23,8 +23,6 @@ bool DatabaseHelper::initDatabase() {
     }
 
     QSqlQuery query;
-
-    // 表1：搜索历史
     QString sqlHistory = "CREATE TABLE IF NOT EXISTS history ("
                          "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                          "word TEXT UNIQUE, "
@@ -33,7 +31,6 @@ bool DatabaseHelper::initDatabase() {
         qDebug() << "Error: Fail to create history table." << query.lastError();
     }
 
-    // 表2：翻译缓存 (存储单词及其对应的翻译结果)
     QString sqlCache = "CREATE TABLE IF NOT EXISTS dict_cache ("
                        "word TEXT PRIMARY KEY, "
                        "result TEXT, "
@@ -69,7 +66,16 @@ void DatabaseHelper::clearHistory() {
     query.exec("DELETE FROM history");
 }
 
-// --- 缓存表操作 ---
+// --- 新增：删除单条记录实现 ---
+void DatabaseHelper::deleteHistory(const QString &word) {
+    if (word.isEmpty()) return;
+    QSqlQuery query;
+    query.prepare("DELETE FROM history WHERE word = :word");
+    query.bindValue(":word", word);
+    if (!query.exec()) {
+        qDebug() << "Delete History Error:" << query.lastError();
+    }
+}
 
 void DatabaseHelper::saveCache(const QString &word, const QString &result) {
     if (word.isEmpty() || result.isEmpty()) return;
@@ -78,9 +84,7 @@ void DatabaseHelper::saveCache(const QString &word, const QString &result) {
     query.bindValue(":word", word);
     query.bindValue(":result", result);
     query.bindValue(":time", QDateTime::currentDateTime());
-    if (!query.exec()) {
-        qDebug() << "Save Cache Error:" << query.lastError();
-    }
+    query.exec();
 }
 
 QString DatabaseHelper::getCache(const QString &word) {
@@ -90,5 +94,5 @@ QString DatabaseHelper::getCache(const QString &word) {
     if (query.exec() && query.next()) {
         return query.value(0).toString();
     }
-    return QString(); // 返回空字符串表示没找到
+    return QString();
 }

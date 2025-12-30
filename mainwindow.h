@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QStringListModel>
 #include <QFutureWatcher>
+#include <QMenu> // 新增
 #include "networkmanager.h"
 
 QT_BEGIN_NAMESPACE
@@ -23,9 +24,10 @@ private slots:
     void on_historyListView_clicked(const QModelIndex &index);
     void on_exportButton_clicked();
     void on_clearButton_clicked();
-
-    // 新增：复制结果槽函数
     void on_copyButton_clicked();
+
+    // 新增：处理右键菜单请求
+    void on_historyContextMenu(const QPoint &pos);
 
     void handleTranslation(const QString &word, const QString &result);
     void handleError(const QString &errorMsg);

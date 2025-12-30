@@ -15,18 +15,18 @@ class DatabaseHelper : public QObject
 public:
     static DatabaseHelper& instance();
 
-    // 初始化数据库（创建两张表：history 和 dict_cache）
+    // 初始化数据库
     bool initDatabase();
 
     // --- 表1：搜索历史 (history) ---
     void addHistory(const QString &word);
     QStringList getHistory();
     void clearHistory();
+    // 新增：删除单条历史记录
+    void deleteHistory(const QString &word);
 
     // --- 表2：翻译缓存 (dict_cache) ---
-    // 存储翻译结果
     void saveCache(const QString &word, const QString &result);
-    // 获取缓存的翻译结果，如果不存在返回空字符串
     QString getCache(const QString &word);
 
 private:
