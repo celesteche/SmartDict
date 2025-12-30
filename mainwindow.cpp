@@ -5,7 +5,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QtConcurrent>
-#include <QClipboard> // 引入剪贴板类
+#include <QClipboard>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -21,6 +21,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_netManager, &NetworkManager::translationFinished, this, &MainWindow::handleTranslation);
     connect(m_netManager, &NetworkManager::errorOccurred, this, &MainWindow::handleError);
     connect(&m_exportWatcher, &QFutureWatcher<bool>::finished, this, &MainWindow::onExportFinished);
+
+    // --- 新增：回车键触发查询 ---
+    // 当在输入框按下回车键时，自动调用查询按钮的点击函数
+    connect(ui->searchLineEdit, &QLineEdit::returnPressed, this, &MainWindow::on_searchButton_clicked);
 
     updateHistoryView();
 }
@@ -122,7 +126,6 @@ void MainWindow::on_clearButton_clicked()
     }
 }
 
-// 实现复制功能
 void MainWindow::on_copyButton_clicked()
 {
     QString text = ui->resultBrowser->toPlainText();
@@ -131,7 +134,6 @@ void MainWindow::on_copyButton_clicked()
         return;
     }
 
-    // 获取系统剪贴板
     QClipboard *clipboard = QGuiApplication::clipboard();
     clipboard->setText(text);
 
