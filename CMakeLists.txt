@@ -21,6 +21,8 @@ set(PROJECT_SOURCES
     mainwindow.ui
     databasehelper.cpp
     databasehelper.h
+    networkmanager.cpp
+    networkmanager.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
