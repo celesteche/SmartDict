@@ -25,6 +25,8 @@ set(PROJECT_SOURCES
     networkmanager.h
     filehelper.cpp
     filehelper.h
+    logger.cpp
+    logger.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
